@@ -1,3 +1,5 @@
+-- TODO add logic for s_axis_tready
+-- TODO adjust clock dividers for reasonable testbench period
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
