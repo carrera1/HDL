@@ -1,3 +1,6 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
 entity lowlevel_dac_intfc is  
   port ( 
          s_axis_aclk    : in std_logic;  -- the clock (125 MHz) for all flops in your design 
@@ -54,6 +57,7 @@ begin
           bit_select <= 31;
         else
           bit_select <= bit_select - 1;
+        end if;
       end if;
     end if;
   end process;
@@ -62,7 +66,7 @@ begin
   sdata_proc : process(s_axis_aclk, reset_inv, s_axis_tdata)
   begin
     if reset_inv = '1' then
-      sdata <= 0;
+      sdata <= '0';
     elsif rising_edge(s_axis_aclk) then
       sdata <= s_axis_tdata(bit_select); -- TODO see if this works as a mux
     end if;
@@ -71,31 +75,34 @@ begin
   lrck_proc : process(s_axis_aclk, reset_inv)
   begin
     if reset_inv = '1' then
-      lrck_internal <= 0;
+      lrck_internal <= '0';
     elsif rising_edge(s_axis_aclk) then
       if lrck_pulse = '1' then
         lrck_internal <= not lrck_internal;
       end if;
+    end if;
   end process;
 
   bclk_proc : process(s_axis_aclk, reset_inv)
   begin
     if reset_inv = '1' then
-      bclk_internal <= 0;
+      bclk_internal <= '0';
     elsif rising_edge(s_axis_aclk) then
       if bclk_pulse = '1' then
         bclk_internal <= not bclk_internal;
       end if;
+    end if;
   end process;
   
   mclk_proc : process(s_axis_aclk, reset_inv)
   begin
     if reset_inv = '1' then
-      mclk_internal <= 0;
+      mclk_internal <= '0';
     elsif rising_edge(s_axis_aclk) then
       if mclk_pulse = '1' then
         mclk_internal <= not mclk_internal;
       end if;
+    end if;
   end process;
 
   lrck_gen : clkdivider
