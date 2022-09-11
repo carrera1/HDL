@@ -18,7 +18,9 @@ architecture tb of lowlevel_dac_intfc_tb is
             sdata : out std_logic; -- serial data out to the DAC 
             lrck  : out std_logic; -- a 50% duty cycle signal aligned as shown below 
             bclk  : out std_logic; -- the dac clocks sdata on the rising edge of this clock 
-            mclk  : out std_logic  -- a 12.5MHz clock output with arbitrary phase 
+            mclk  : out std_logic; -- a 12.5MHz clock output with arbitrary phase 
+            bitnum1: out natural range 0 to 31;
+            bitnum2: out natural range 0 to 31
         );
     end component;
 
@@ -31,8 +33,10 @@ architecture tb of lowlevel_dac_intfc_tb is
     signal lrck_out     : std_logic;
     signal bclk_out     : std_logic;
     signal mclk_out     : std_logic;
+    signal current_bit  : natural;
+    signal previous_bit : natural;
 
-    constant TbPeriod : time := 8 ns;
+    constant TbPeriod : time := 8 ns; -- 125 MHz
     signal TbClock    : std_logic := '0';
 
 begin
@@ -48,10 +52,13 @@ begin
             sdata => sdata_out,
             lrck  => lrck_out,
             bclk  => bclk_out,
-            mclk  => mclk_out
+            mclk  => mclk_out,
+            bitnum1 => current_bit,
+            bitnum2 => previous_bit
         );
 
     TbClock <= not TbClock after TbPeriod/2;
+    clk_in <= TbClock;
 
     stimuli : process
     begin
